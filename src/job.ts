@@ -14,7 +14,7 @@
 
 import type { ArkeClient } from '@arke-institute/sdk';
 import type { KladosLogger, KladosRequest, Output } from '@arke-institute/rhiza';
-import type { TargetProperties, OutputProperties } from './types';
+import type { Env, TargetProperties, OutputProperties } from './types';
 
 /**
  * Context provided to processJob
@@ -31,6 +31,9 @@ export interface ProcessContext {
 
   /** SQLite storage for checkpointing long operations */
   sql: SqlStorage;
+
+  /** Worker environment bindings (secrets, vars, DO namespaces) */
+  env: Env;
 }
 
 /**

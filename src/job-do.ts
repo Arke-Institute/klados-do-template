@@ -230,6 +230,7 @@ export class KladosJobDO extends DurableObject<Env> {
         client,
         logger,
         sql: this.sql,
+        env: this.env,
       });
 
       // Handle reschedule (for long-running operations)
