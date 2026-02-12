@@ -1,0 +1,14 @@
+{
+  "label": "My Klados DO Worker",
+  "description": "Durable Object worker for long-running operations",
+  "endpoint": "https://my-do-worker.username.workers.dev",
+  "actions_required": ["entity:view", "entity:create", "entity:update"],
+  "accepts": {
+    "types": ["*"],
+    "cardinality": "one"
+  },
+  "produces": {
+    "types": ["*"],
+    "cardinality": "one"
+  }
+}
