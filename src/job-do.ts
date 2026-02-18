@@ -213,11 +213,6 @@ export class KladosJobDO extends DurableObject<Env> {
           messages: logger.getMessages(),
           agentId: config.agentId,
           agentVersion: config.agentVersion,
-          // Use relationship updater for fire-and-forget parent log updates
-          relationshipUpdaterUrl: 'https://scatter-utility.arke.institute',
-          authToken: config.authToken,
-          apiBase: request.api_base,
-          network: request.network,
         });
 
         logFileId = fileId;
