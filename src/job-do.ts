@@ -107,7 +107,7 @@ export class KladosJobDO extends DurableObject<Env> {
     const { request: kladosRequest, config } = body;
 
     // Check if already started (idempotency)
-    const existing = this.sql.exec('SELECT status FROM job_state WHERE id = 1').one();
+    const existing = this.sql.exec('SELECT status FROM job_state WHERE id = 1').toArray()[0];
     if (existing) {
       return Response.json({
         accepted: true,
@@ -143,7 +143,7 @@ export class KladosJobDO extends DurableObject<Env> {
    * Get current job status
    */
   private handleStatus(): Response {
-    const row = this.sql.exec('SELECT status, error FROM job_state WHERE id = 1').one();
+    const row = this.sql.exec('SELECT status, error FROM job_state WHERE id = 1').toArray()[0];
     if (!row) {
       return Response.json({ status: 'not_found' }, { status: 404 });
     }
@@ -161,7 +161,7 @@ export class KladosJobDO extends DurableObject<Env> {
    * alarms can run for much longer and can reschedule themselves.
    */
   async alarm(): Promise<void> {
-    const row = this.sql.exec('SELECT * FROM job_state WHERE id = 1').one();
+    const row = this.sql.exec('SELECT * FROM job_state WHERE id = 1').toArray()[0];
     if (!row) return;
 
     const request: KladosRequest = JSON.parse(row.request as string);
@@ -184,9 +184,11 @@ export class KladosJobDO extends DurableObject<Env> {
 
     const logger = new KladosLogger();
 
+    // Track logFileId outside try so catch can access the updated value
+    let logFileId = row.log_file_id as string | null;
+
     try {
       // Write initial log if not done yet
-      let logFileId = row.log_file_id as string | null;
       if (!logFileId) {
         const logEntry: KladosLogEntry = {
           id: logId,
@@ -297,7 +299,6 @@ export class KladosJobDO extends DurableObject<Env> {
       const errorMessage = error instanceof Error ? error.message : String(error);
       logger.error('Job failed', { error: errorMessage });
 
-      const logFileId = row.log_file_id as string | null;
       if (logFileId) {
         await failKlados(client, {
           logFileId,
