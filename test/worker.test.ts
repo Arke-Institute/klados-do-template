@@ -95,7 +95,7 @@ describe('klados-do-worker', () => {
         content: 'Test content for processing',
         created_at: new Date().toISOString(),
       },
-      collectionId: targetCollection.id,
+      collection: targetCollection.id,
     });
     log(`Created test entity: ${testEntity.id}`);
   });
